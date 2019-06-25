@@ -14,8 +14,12 @@ import FormItem from './common/FormItem.vue'
     data(){
       return {
         formItems:[{labelText:'所在城市',paramKey:'b',require:true,inputType:'select', value:[{value:'1',text:'北京'}]},
-        {inputType:'textarea', labelText:'留言',paramKey:'a',require:false, value:[{value:'1',text:'北京'}]}],
-        btns:[{class:'ok',text:'提交'},{class:'cancel',text:'取消'}],
+        {inputType:'input', labelText:'商户名称',paramKey:'a',require:false, value:[{value:'1',text:'北京'}]},
+        {inputType:'input', labelText:'公司地址',paramKey:'a',require:false, value:[{value:'1',text:'北京'}]},
+        {inputType:'input', labelText:'联系人姓名',paramKey:'a',require:true, value:[{value:'1',text:'北京'}]},
+        {inputType:'input', labelText:'手机号码',paramKey:'a',require:true, value:[{value:'1',text:'北京'}]}
+        ],
+        btns:[{class:'ok',text:'提交'}],
       }
     }
    }

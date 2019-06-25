@@ -118,7 +118,9 @@ ul{
   height:.5rem;
 }
 .btngp{
-  margin-top:.1rem;
+  position: absolute;
+  width: 3.6rem;
+  bottom: .1rem;
 }
 .btngp ul{
   display:flex;
