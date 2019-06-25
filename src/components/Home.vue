@@ -13,7 +13,8 @@ import FormItem from './common/FormItem.vue'
     },
     data(){
       return {
-        formItems:[{labelText:'所在城市',require:true,inputType:'select', value:[{value:'1',text:'北京'}]},{inputType:'textarea',labelText:'所在城市城市',require:false, value:[{value:'1',text:'北京'}]}],
+        formItems:[{labelText:'所在城市',require:true,inputType:'select', value:[{value:'1',text:'北京'}]},
+        {inputType:'textarea', labelText:'留言',require:false, value:[{value:'1',text:'北京'}]}],
         btns:[{class:'ok',text:'提交'},{class:'cancel',text:'取消'}],
       }
     }

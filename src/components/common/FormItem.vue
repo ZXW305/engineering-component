@@ -8,12 +8,12 @@
            <option v-for="opt in item.value" v-bind:key="opt.value">{{opt.text}}</option>
          </Select>
          <input type='text' v-if="item.inputType==='input'" class="input">
-         <textarea v-if="item.inputType==='textarea'" class="input textarea"></textarea>
+         <textarea v-if="item.inputType==='textarea'" class="input textarea" v-model="item.paramKey"></textarea>
        </div>
       </li>
     </ul>
     <slot></slot>
-    <div class="btngp">
+    <div class="btngp" v-if="btns.length">
       <ul>
         <li v-for="(btn, index) in btns" v-bind:key="index">
           <button :class="`${btn.class} button`" @click="click(btn)">{{btn.text}}</button>
@@ -48,7 +48,7 @@
         //处理提交方法
         const { method, url, callback } = this.props.requestOpts
         const data = []
-        axios({
+        this.$axios({
           method,
           url,
           data,
@@ -59,6 +59,7 @@
         })
       },
       cancel(){
+
       },
     },
   }
@@ -130,8 +131,10 @@ ul{
 .btngp .ok{
   background:#2196f3;
   color:white;
+  border: 1px solid #2196f3;
 }
 .btngp .cancel{
-
+  background-color:#dddddd;
+  border:1px solid #dddddd;
 }
 </style>
