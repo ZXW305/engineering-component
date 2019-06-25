@@ -8,7 +8,7 @@
            <option v-for="opt in item.value" v-bind:key="opt.value">{{opt.text}}</option>
          </Select>
          <input type='text' v-if="item.inputType==='input'" class="input">
-         <textarea v-if="item.inputType==='textarea'" class="input textarea" v-model="item.paramKey"></textarea>
+         <textarea v-if="item.inputType==='textarea'" class="input textarea" v-model="formData[item.paramKey]"></textarea>
        </div>
       </li>
     </ul>
@@ -33,7 +33,7 @@
     },
     data(){
       return{
-
+        formData:{}
       }
     },
     methods:{
@@ -45,18 +45,23 @@
         }
       },
       submit(){
+        console.log(JSON.stringify(this.formData),this.requestOpts)
         //处理提交方法
-        const { method, url, callback } = this.props.requestOpts
-        const data = []
-        this.$axios({
-          method,
-          url,
-          data,
-        }).then(suc => {
-          this.$emit(callback,suc)
-        },err => {
-          this.$emit(callback,err)
-        })
+        if(this.requestOpts){
+          const { method, url, callback } = this.requestOpts
+          const data = JSON.stringify(this.formData);
+          this.$axios({
+            method,
+            url,
+            data,
+            }).then(suc => {
+              this.$emit(callback,suc)
+            },err => {
+              this.$emit(callback,err)
+            })
+        }else {
+          this.emit('callback',this.formData)
+        }
       },
       cancel(){
 
