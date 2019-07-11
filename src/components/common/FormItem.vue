@@ -1,70 +1,48 @@
 <template>
   <div>
-    <ul class="form-ul">
-      <li v-for="(item,index) in formItems" v-bind:key="index">
+    <ul class="form-ul" v-if="item">
+      <li>
        <span class="label"><i v-if="item.require" class="require">*</i>{{item.labelText}}</span>
        <div class="inputContent">
-         <Select v-if="item.inputType==='select'" class="select">
-           <option v-for="opt in item.value" v-bind:key="opt.value">{{opt.text}}</option>
-         </Select>
-         <input type='text' v-if="item.inputType==='input'" class="input">
-         <textarea v-if="item.inputType==='textarea'" class="input textarea" v-model="formData[item.paramKey]"></textarea>
+         <select v-if="item.inputType==='select'" v-model="vInput" class="select" @change="onChange(item.paramKey)">
+           <option v-for="opt in item.opts" v-bind:value="opt.value">{{opt.text}}</option>
+         </select>
+         <input type='text' v-if="item.inputType==='input'" v-model="vInput" class="input"/>
+         <span v-if="item.inputType==='input' && vInput.length"  class="clear" @click="clear()"></span>
+         <textarea v-if="item.inputType==='textarea'" class="input textarea" v-model="vInput"></textarea>
+         <slot></slot>
        </div>
       </li>
     </ul>
-    <slot></slot>
-    <div class="btngp" v-if="btns.length">
-      <ul>
-        <li v-for="(btn, index) in btns" v-bind:key="index">
-          <button :class="`${btn.class} button`" @click="click(btn)">{{btn.text}}</button>
-        </li>
-      </ul>
-    </div>
   </div>
 </template>
 
 <script>
+
   export default{
     name: 'formItem',
     props:{
-      formItems:Array,
-      requestOpts:Object,
-      btns:Array,
+      item:Object,
+      pdata:String,
     },
     data(){
       return{
-        formData:{}
+        formData: {},
+        animationOk: false,
+        animationCancel: false,
+        vInput:'',
       }
     },
-    methods:{
-      click(btn){
-        if(btn.class === 'ok'){
-          this.submit()
-        }else if(btn.class === 'cancel'){
-          this.cancel()
-        }
-      },
-      submit(){
-        console.log(JSON.stringify(this.formData),this.requestOpts)
-        //处理提交方法
-        if(this.requestOpts){
-          const { method, url, callback } = this.requestOpts
-          const data = JSON.stringify(this.formData);
-          this.$axios({
-            method,
-            url,
-            data,
-            }).then(suc => {
-              this.$emit(callback,suc)
-            },err => {
-              this.$emit(callback,err)
-            })
-        }else {
-          this.emit('callback',this.formData)
-        }
-      },
-      cancel(){
+    updated(){
+      this.$parent[this.pdata] = this.vInput;
+    },
 
+    methods:{
+      clear(key){
+        this.vInput = ''
+      },
+      onChange(target){
+        this.$emit('onChange',{target: target, value: this.formData[target]})
       },
     },
   }
@@ -76,12 +54,12 @@ ul{
   padding:0;
 }
 .form-ul{
-  padding-top:.1rem;
+
 }
 .form-ul li{
   display:flex;
   margin-left:.1rem;
-  border-bottom:solid 1px #eee;
+  border-bottom:solid .01rem #eee;
   font-size:.14rem;
   padding: .05rem;
   align-items: center;
@@ -93,7 +71,7 @@ ul{
 }
 .form-ul .label{
   margin-right:.1rem;
-  width:30%;
+  width:1.125rem;
 }
 .form-ul li .select{
   width:-webkit-fill-available;
@@ -104,15 +82,18 @@ ul{
 .form-ul li .select option{
 }
 .form-ul .inputContent{
-  width:70%;
+  width:2.625rem;
+  position:relative;
 }
 .form-ul li .input{
   height: .25rem;
   border-radius: .04rem;
+  margin-top: .03rem;
+  margin-bottom: .03rem;
   margin-right:.1rem;
-  margin-top: .05rem;
-  border: 1px solid #eee;
+  border: .01rem solid #eee;
   width:-webkit-fill-available;
+  text-align: center;
 }
 .form-ul li .textarea{
   height:.5rem;
@@ -121,6 +102,7 @@ ul{
   position: absolute;
   width: 3.6rem;
   bottom: .1rem;
+  left:.072rem;
 }
 .btngp ul{
   display:flex;
@@ -138,10 +120,40 @@ ul{
 .btngp .ok{
   background:#2196f3;
   color:white;
-  border: 1px solid #2196f3;
+  border: .01rem solid #2196f3;
+}
+.ok_animation{
+  animation: btn_ok_animation .2s;
 }
 .btngp .cancel{
   background-color:#dddddd;
-  border:1px solid #dddddd;
+  border:.01rem solid #dddddd;
+}
+.cancel_animation{
+  animation: btn_cancel_animation .2s;
+}
+.none{
+  height: .25rem;
+  border: solid .01rem #eee;
+  border-radius: .04rem;
+}
+.clear{
+  position:absolute;
+  right: .16rem;
+  top: .08rem;
+  background-image:url('../../assets/images/clear.png');
+  height:.18rem;
+  width:.18rem;
+  background-size:.18rem .18rem;
+}
+@keyframes btn_ok_animation{
+  from {background-color: #2196f3;}
+  50% {background-color: #57758c;}
+  to {background-color: #2196f3;}
+}
+@keyframes btn_cancel_animation{
+  from{background-color: #dddddd}
+  50% {background-color: #c7b3b3;}
+  to {background-color: #dddddd;}
 }
 </style>
